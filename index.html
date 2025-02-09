@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>To Do List</h1>
+    <form >
+        <div class="action">
+            <input class="text">
+            <button class="btn">ADD
+            </button>
+        </div>
+        <section class="addtodo">
+            
+            
+        </section>
+    </form>
+    <script>
+        const cn = document.querySelector(".addtodo");
+        const but =document.querySelector(".btn");
+        const inp = document.querySelector(".text");
+    let localtd=[];
+    const gettdlfromlocal=()=>{
+       return  JSON.parse(localStorage.getItem("todoapp"));
+
+    }
+    const addtodolist = (localtd)=>{
+        return localStorage.setItem("todoapp",JSON.stringify(localtd));
+    }
+    localtd=gettdlfromlocal()||[];
+
+     const addatlist=(ce)=>{
+        const divelement = document.createElement("div");
+        divelement.classList.add("todo");
+        divelement.innerHTML=  `<li>${ce}</li> <button class="deletebtn">DELETE</button>`;
+        cn.append(divelement);
+     }
+
+
+    const addevent = (e)=>{
+        e.preventDefault();
+        const todolistvalue = inp.value.trim();
+        if(todolistvalue!="" && !localtd.includes(todolistvalue)){
+        
+        localtd.push(todolistvalue);
+        localtd= [...new Set(localtd)];
+        console.log(localtd);
+        localStorage.setItem("todoapp",JSON.stringify(localtd))
+        const divelement = document.createElement("div");
+        divelement.classList.add("todo");
+        divelement.innerHTML=  `<li>${inp.value}</li> <button class="deletebtn">DELETE</button>`;
+        cn.append(divelement);
+        }
+        inp.value="";
+    }
+    const showtdl=()=>{
+        localtd.forEach((ce)=>{
+           addatlist(ce); 
+        })
+
+    }
+    showtdl();
+    const removetdelem=(e)=>{
+        const tr=e.target;
+        let todolistcontent = tr.previousElementSibling;
+        let pe= tr.parentElement;
+        console.log(todolistcontent.innerText);
+        localtd=localtd.filter((ce)=>{
+            return ce!=todolistcontent.innerText.toLowerCase();
+        })
+        addtodolist(localtd);
+        if(tr.classList.contains("deletebtn"))
+        pe.remove();
+        console.log(localtd);
+    }
+    cn.addEventListener("click",(e)=>{
+        e.preventDefault();
+        removetdelem(e);
+
+    })
+    but.addEventListener("click", (e)=>{
+        addevent(e);
+    })
+
+
+
+
+    </script>
+</body>
+</html>
